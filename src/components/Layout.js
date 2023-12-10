@@ -1,15 +1,30 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Grid } from "@mui/material";
+import { Grid, Modal } from "@mui/material";
+
 import Sidebar from "./Sidebar";
 import MainForm from "./MainForm";
 import ModalBox from "./ModalBox";
-import { Modal, Box, Typography } from "@mui/material";
-import { closeSheetModal } from "../actions/drive-actions";
+import SearchPatient from "./SearchPatient";
+
+import { closeSheetModal } from "../actions/app-actions";
 
 function Layout() {
   const dispatch = useDispatch();
   const modalState = useSelector((state) => state.modalOpen && state.modalOpen);
+  const selectedTab = useSelector(
+    (state) => state.selectedTab && state.selectedTab
+  );
+
+  function currentTab() {
+    if (selectedTab && selectedTab === "add") {
+      return <MainForm />;
+    } else if (selectedTab && selectedTab === "search") {
+      return <SearchPatient />;
+    } else {
+      return <MainForm />;
+    }
+  }
 
   return (
     <Grid container spacing={2} padding="40px">
@@ -21,7 +36,7 @@ function Layout() {
         <Modal open={modalState} onClose={() => dispatch(closeSheetModal())}>
           <ModalBox />
         </Modal>
-        <MainForm />
+        {currentTab()}
       </Grid>
     </Grid>
   );

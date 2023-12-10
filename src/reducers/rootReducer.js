@@ -3,6 +3,8 @@ const initialState = {
   modalOpen: false,
   spreadSheets: [],
   spreadSheetId: "",
+  spreadSheetData: {},
+  selectedTab: "add",
 };
 
 function rootReducer(state = initialState, action) {
@@ -30,6 +32,16 @@ function rootReducer(state = initialState, action) {
     return {
       ...state,
       spreadSheetId: action.payload,
+    };
+  } else if (action.type === "SET-SPREADSHEET-DATA") {
+    return {
+      ...state,
+      spreadSheetData: action.payload,
+    };
+  } else if (action.type === "SET-SELECTED-TAB") {
+    return {
+      ...state,
+      selectedTab: action.payload,
     };
   } else {
     return {

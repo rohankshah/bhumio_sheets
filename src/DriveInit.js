@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { setCurrAccessToken, openSheetModal } from "./actions/drive-actions";
+import React, { useEffect } from "react";
+import { setCurrAccessToken } from "./actions/drive-actions";
 import { useDispatch } from "react-redux";
 import { Typography } from "@mui/material";
+import { openSheetModal } from "./actions/app-actions";
 
 const DriveInit = () => {
   const dispatch = useDispatch();
@@ -14,7 +15,7 @@ const DriveInit = () => {
       dispatch(setCurrAccessToken(accessTokenCurr));
       dispatch(openSheetModal());
     }
-  }, []);
+  }, [dispatch]);
 
   function handleLogin() {
     let client_id = process.env.REACT_APP_CLIENT_ID;

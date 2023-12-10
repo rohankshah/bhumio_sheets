@@ -4,16 +4,6 @@ function setAccessToken(token) {
     payload: token,
   };
 }
-function setModalOpen() {
-  return {
-    type: "SET-MODAL-OPEN",
-  };
-}
-function setModalClose() {
-  return {
-    type: "SET-MODAL-CLOSE",
-  };
-}
 
 function setSpreadsheetList(spreadsheets) {
   return {
@@ -29,22 +19,16 @@ function setSpreadsheetId(id) {
   };
 }
 
+function setSpreadsheetData(data) {
+  return {
+    type: "SET-SPREADSHEET-DATA",
+    payload: data,
+  };
+}
+
 function setCurrAccessToken(token) {
   return (dispatch, state) => {
     dispatch(setAccessToken(token));
-  };
-}
-
-function openSheetModal() {
-  return (dispatch, state) => {
-    console.log("hereeeee");
-    dispatch(setModalOpen());
-  };
-}
-
-function closeSheetModal() {
-  return (dispatch, state) => {
-    dispatch(setModalClose());
   };
 }
 
@@ -77,7 +61,6 @@ function fetchSpreadSheets() {
 function setCurrSpreadsheetId(id) {
   return (dispatch, state) => {
     dispatch(setSpreadsheetId(id));
-    console.log(state());
   };
 }
 
@@ -101,15 +84,13 @@ function fetchSpreadSheetData(spreadSheetId) {
       requestOptions
     )
       .then((response) => response.json())
-      .then((result) => console.log(result))
+      .then((result) => dispatch(setSpreadsheetData(result.valueRanges)))
       .catch((error) => console.log("error", error));
   };
 }
 
 export {
   setCurrAccessToken,
-  openSheetModal,
-  closeSheetModal,
   fetchSpreadSheets,
   setCurrSpreadsheetId,
   fetchSpreadSheetData,

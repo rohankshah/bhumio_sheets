@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import {
   fetchSpreadSheets,
   setCurrSpreadsheetId,
-  closeSheetModal,
   fetchSpreadSheetData,
 } from "../actions/drive-actions";
+import { closeSheetModal } from "../actions/app-actions";
 
 const style = {
   position: "absolute",
@@ -30,7 +30,7 @@ function ModalBox() {
 
   useEffect(() => {
     dispatch(fetchSpreadSheets());
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     if (accSpreadsheets && accSpreadsheets.length > 0) {
