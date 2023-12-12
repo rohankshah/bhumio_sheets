@@ -246,6 +246,18 @@ function updateSpreadSheetData(
   patientRow
 ) {
   return (dispatch, state) => {
+    if (appointmentRow === 0) {
+      appointmentRow = state().spreadSheetData[0].values.length + 1;
+    }
+    if (prescribesRow === 0) {
+      prescribesRow = state().spreadSheetData[1].values.length + 1;
+    }
+    if (physicianRow === 0) {
+      physicianRow = state().spreadSheetData[3].values.length + 1;
+    }
+    if (patientRow === 0) {
+      patientRow = state().spreadSheetData[2].values.length + 1;
+    }
     var myHeaders = new Headers();
     myHeaders.append("Authorization", "Bearer " + state().accessToken);
     myHeaders.append("Accept", "application/json");

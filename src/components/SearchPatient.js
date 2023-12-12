@@ -31,12 +31,9 @@ function SearchPatient() {
     physicianPos: "",
     bill: "",
   });
-
   const [visitDate, setVisitDate] = useState();
   const [nextVisit, setNextVisit] = useState();
-
   const [searchQuery, setSearchQuery] = useState("");
-
   const [patientRow, setPatientRow] = useState(0);
   const [appointmentRow, setAppointmentRow] = useState(0);
   const [prescribesRow, setPrescribesRow] = useState(0);
@@ -108,8 +105,8 @@ function SearchPatient() {
       patientId: patientSearch && patientSearch[0],
       patientName: patientSearch && patientSearch[1] + " " + patientSearch[2],
       location: patientSearch && patientSearch[4],
-      // age: patientSearch && patientSearch[0],
-      // gender: patientSearch && patientSearch[0],
+      age: patientSearch && patientSearch[7],
+      gender: patientSearch && patientSearch[8],
       phone: patientSearch && patientSearch[6],
       address: patientSearch && patientSearch[3],
       prescription: prescribesSearch && prescribesSearch[2],
@@ -117,7 +114,7 @@ function SearchPatient() {
       physicianId: physicianSearch && physicianSearch[0],
       physicianName: physicianSearch && physicianSearch[1],
       physicianPhone: physicianSearch && physicianSearch[3],
-      bill: "",
+      bill: physicianSearch && physicianSearch[4],
     });
 
     if (appointmentSearch && appointmentSearch[3]) {
@@ -200,7 +197,6 @@ function SearchPatient() {
     setNextVisit(null);
     setVisitDate(null);
     setSearchQuery("");
-    console.log(formValues);
   }
 
   return (
@@ -280,18 +276,18 @@ function SearchPatient() {
         </Grid>
         {/* Second row */}
         <Grid container justifyContent="space-between" marginBottom="40px">
-          <Grid item lg={1}>
+          <Grid item lg={2}>
             <InputLabel>Age</InputLabel>
             <TextField
               variant="outlined"
               sx={{ width: "100%" }}
               value={formValues.age}
               onChange={(e) =>
-                setFormValues({ ...formValues, location: e.target.value })
+                setFormValues({ ...formValues, age: e.target.value })
               }
             />
           </Grid>
-          <Grid item lg={1}>
+          <Grid item lg={2}>
             <InputLabel>Gender</InputLabel>
             <Select
               label="Gender"

@@ -52,6 +52,8 @@ function MainForm() {
         formValues.location,
         "",
         formValues.phone,
+        formValues.age,
+        formValues.gender,
       ],
       physicianData: [
         formValues.physicianId,
@@ -98,25 +100,6 @@ function MainForm() {
     return randomId;
   }
 
-  // function checkFormComplete() {
-  //   return (
-  //     formValues.patientName &&
-  //     formValues.location &&
-  //     formValues.age &&
-  //     formValues.gender &&
-  //     formValues.phone &&
-  //     formValues.address &&
-  //     formValues.prescription &&
-  //     formValues.dose &&
-  //     formValues.physicianId &&
-  //     formValues.physicianName &&
-  //     formValues.physicianPhone &&
-  //     formValues.bill &&
-  //     visitDate &&
-  //     nextVisit
-  //   );
-  // }
-
   return (
     <>
       <Grid item lg={10}>
@@ -155,7 +138,7 @@ function MainForm() {
         </Grid>
         {/* Second row */}
         <Grid container justifyContent="space-between" marginBottom="40px">
-          <Grid item lg={1}>
+          <Grid item lg={2}>
             <InputLabel>Age</InputLabel>
             <TextField
               variant="outlined"
@@ -166,7 +149,7 @@ function MainForm() {
               }
             />
           </Grid>
-          <Grid item lg={1}>
+          <Grid item lg={2}>
             <InputLabel>Gender</InputLabel>
             <Select
               label="Gender"
