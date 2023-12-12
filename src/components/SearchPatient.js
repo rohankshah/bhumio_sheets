@@ -1,15 +1,21 @@
-import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { Grid, TextField, InputLabel, Select, MenuItem } from "@mui/material";
-import { Unstable_NumberInput as NumberInput } from "@mui/base/Unstable_NumberInput";
-import { DatePicker } from "@mui/x-date-pickers";
+import React, { useState } from "react";
 import dayjs from "dayjs";
+import { useSelector, useDispatch } from "react-redux";
+import { Grid, TextField, InputLabel, Select, MenuItem } from "@mui/material";
+import { DatePicker } from "@mui/x-date-pickers";
+
+import { updateSpreadSheetData } from "../actions/drive-actions";
 
 function SearchPatient() {
+  const dispatch = useDispatch();
   const spreadSheetData = useSelector(
     (state) => state.spreadSheetData && state.spreadSheetData
   );
+  const searchAndEditState = useSelector(
+    (state) => state.searchAndEditState && state.searchAndEditState
+  );
   const [formValues, setFormValues] = useState({
+    appointmentId: "",
     patientId: "",
     patientName: "",
     location: "",
@@ -22,6 +28,7 @@ function SearchPatient() {
     physicianId: "",
     physicianName: "",
     physicianPhone: "",
+    physicianPos: "",
     bill: "",
   });
 
@@ -30,13 +37,24 @@ function SearchPatient() {
 
   const [searchQuery, setSearchQuery] = useState("");
 
+  const [patientRow, setPatientRow] = useState(0);
+  const [appointmentRow, setAppointmentRow] = useState(0);
+  const [prescribesRow, setPrescribesRow] = useState(0);
+  const [physicianRow, setPhysicianRow] = useState(0);
+
   function performSearch() {
     if (spreadSheetData.length > 0) {
       handleSearch();
     }
   }
 
-  function handleSearch() {
+  async function handleSearch() {
+    console.log("searchs");
+    setPatientRow(0);
+    setAppointmentRow(0);
+    setPrescribesRow(0);
+    setPhysicianRow(0);
+    await resetValues();
     let patientSearch, appointmentSearch, prescribesSearch, physicianSearch;
     let searchHeaders = spreadSheetData[2].values[0];
     let searchData = spreadSheetData[2].values.slice(1);
@@ -58,24 +76,36 @@ function SearchPatient() {
         row[phone].toLowerCase().includes(searchQuery.toLowerCase())
     );
     patientSearch = final[0];
+    setPatientRow(searchData.indexOf(patientSearch) + 2);
     if (final && final[0]) {
       let appointmentSearchData = spreadSheetData[0].values.slice(1);
       appointmentSearch = appointmentSearchData.filter(
         (ele) => ele[1] === final[0][0]
       )[0];
+      if (appointmentSearch) {
+        setAppointmentRow(appointmentSearchData.indexOf(appointmentSearch) + 2);
+      }
 
       let prescribesSearchData = spreadSheetData[1].values.slice(1);
       prescribesSearch = prescribesSearchData.filter(
         (ele) => ele[1] === final[0][0]
       )[0];
+      if (prescribesSearch) {
+        setPrescribesRow(prescribesSearchData.indexOf(prescribesSearch) + 2);
+      }
     }
     if (appointmentSearch && appointmentSearch[2]) {
       let physicianSearchData = spreadSheetData[3].values.slice(1);
       physicianSearch = physicianSearchData.filter(
         (ele) => ele[0] === appointmentSearch[2]
       )[0];
+      if (prescribesSearch) {
+        setPhysicianRow(physicianSearchData.indexOf(physicianSearch) + 2);
+      }
+      console.log(patientRow, appointmentRow, physicianRow, prescribesRow);
     }
     setFormValues({
+      appointmentId: appointmentSearch && appointmentSearch[0],
       patientId: patientSearch && patientSearch[0],
       patientName: patientSearch && patientSearch[1] + " " + patientSearch[2],
       location: patientSearch && patientSearch[4],
@@ -90,14 +120,88 @@ function SearchPatient() {
       physicianPhone: physicianSearch && physicianSearch[3],
       bill: "",
     });
-    const [monthVisit, dayVisit, yearVisit] = appointmentSearch[3].split("/");
-    const dateVisitFormat = dayjs(`${dayVisit}-${monthVisit}-${yearVisit}`);
 
-    const [monthNext, dayNext, yearNext] = appointmentSearch[3].split("/");
-    const dateNextFormat = dayjs(`${dayNext}-${monthNext}-${yearNext}`);
+    if (appointmentSearch && appointmentSearch[3]) {
+      const [monthVisit, dayVisit, yearVisit] = appointmentSearch[3].split("/");
+      const dateVisitFormat = dayjs(`${dayVisit}-${monthVisit}-${yearVisit}`);
+      setVisitDate(appointmentSearch && dayjs(dateVisitFormat));
+    }
 
-    setVisitDate(appointmentSearch && dayjs(dateVisitFormat));
-    setNextVisit(appointmentSearch && dayjs(dateNextFormat));
+    if (appointmentSearch && appointmentSearch[4]) {
+      const [monthNext, dayNext, yearNext] = appointmentSearch[4].split("/");
+      const dateNextFormat = dayjs(`${dayNext}-${monthNext}-${yearNext}`);
+      setNextVisit(appointmentSearch && dayjs(dateNextFormat));
+    }
+  }
+
+  function handleEdit() {
+    const updateParams = {
+      appointmentData: [
+        formValues.appointmentId ? formValues.appointmentId : "",
+        formValues.patientId ? formValues.patientId : "",
+        formValues.physicianId ? formValues.physicianId : "",
+        visitDate ? visitDate.format("DD/MM/YY") : null,
+        nextVisit ? nextVisit.format("DD/MM/YY") : null,
+      ],
+      prescribesData: [
+        formValues.physicianId ? formValues.physicianId : "",
+        formValues.patientId ? formValues.patientId : "",
+        formValues.prescription ? formValues.prescription : "",
+        formValues.dose ? formValues.dose : "",
+      ],
+      patientData: [
+        formValues.patientId ? formValues.patientId : "",
+        formValues.patientName.split(" ")[0]
+          ? formValues.patientName.split(" ")[0]
+          : "",
+        formValues.patientName.split(" ")[1]
+          ? formValues.patientName.split(" ")[1]
+          : "",
+        formValues.address ? formValues.address : "",
+        formValues.location ? formValues.location : "",
+        "",
+        formValues.phone ? formValues.phone : "",
+      ],
+      physicianData: [
+        formValues.physicianId ? formValues.physicianId : "",
+        formValues.physicianName ? formValues.physicianName : "",
+        formValues.physicianPos ? formValues.physicianPos : "",
+        formValues.physicianPhone ? formValues.physicianPhone : "",
+        formValues.bill ? formValues.bill : "",
+      ],
+    };
+    dispatch(
+      updateSpreadSheetData(
+        updateParams,
+        appointmentRow,
+        prescribesRow,
+        physicianRow,
+        patientRow
+      )
+    );
+    resetValues();
+  }
+
+  function resetValues() {
+    setFormValues({
+      patientId: "",
+      patientName: "",
+      location: "",
+      age: "",
+      gender: "",
+      phone: "",
+      address: "",
+      prescription: "",
+      dose: "",
+      physicianId: "",
+      physicianName: "",
+      physicianPhone: "",
+      bill: "",
+    });
+    setNextVisit(null);
+    setVisitDate(null);
+    setSearchQuery("");
+    console.log(formValues);
   }
 
   return (
@@ -109,6 +213,7 @@ function SearchPatient() {
             <TextField
               variant="outlined"
               sx={{ width: "100%", marginBottom: "20px" }}
+              value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </Grid>
@@ -122,6 +227,19 @@ function SearchPatient() {
               onClick={() => performSearch()}
             >
               Search
+            </div>
+          </Grid>
+          <Grid item>
+            <div
+              style={{
+                padding: "10px 20px",
+                border: "1px solid black",
+                marginLeft: "20px",
+                display: searchAndEditState === "edit" ? "block" : "none",
+              }}
+              onClick={() => handleEdit()}
+            >
+              Edit
             </div>
           </Grid>
         </Grid>

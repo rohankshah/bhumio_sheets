@@ -16,6 +16,13 @@ function setSelectedTab(tab) {
   };
 }
 
+function setSearchAndEditState(tab) {
+  return {
+    type: "SET-SEARCH-AND-EDIT-STATE",
+    payload: tab,
+  };
+}
+
 function openSheetModal() {
   return (dispatch, state) => {
     dispatch(setModalOpen());
@@ -34,4 +41,15 @@ function changeSelectedTab(tab) {
   };
 }
 
-export { openSheetModal, closeSheetModal, changeSelectedTab };
+function changeSearchAndEditState(tab) {
+  return (dispatch, state) => {
+    dispatch(setSearchAndEditState(tab));
+  };
+}
+
+export {
+  openSheetModal,
+  closeSheetModal,
+  changeSelectedTab,
+  changeSearchAndEditState,
+};

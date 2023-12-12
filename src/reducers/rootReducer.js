@@ -5,6 +5,7 @@ const initialState = {
   spreadSheetId: "",
   spreadSheetData: {},
   selectedTab: "add",
+  searchAndEditState: "",
 };
 
 function rootReducer(state = initialState, action) {
@@ -43,6 +44,11 @@ function rootReducer(state = initialState, action) {
     return {
       ...state,
       selectedTab: action.payload,
+    };
+  } else if (action.type === "SET-SEARCH-AND-EDIT-STATE") {
+    return {
+      ...state,
+      searchAndEditState: action.payload,
     };
   } else {
     return {

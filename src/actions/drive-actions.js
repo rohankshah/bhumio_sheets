@@ -85,6 +85,7 @@ function fetchSpreadSheetData(spreadSheetId) {
     )
       .then((response) => response.json())
       .then((result) => dispatch(setSpreadsheetData(result.valueRanges)))
+      .then((res) => console.log(res, state().spreadSheetId))
       .catch((error) => console.log("error", error));
   };
 }
@@ -216,10 +217,78 @@ function appendSpreadSheetData(appendParams) {
   };
 }
 
+function updateSpreadSheetData(
+  updateParams,
+  appointmentRow,
+  prescribesRow,
+  physicianRow,
+  patientRow
+) {
+  console.log(
+    updateParams,
+    appointmentRow,
+    prescribesRow,
+    physicianRow,
+    patientRow
+  );
+  console.log(updateParams);
+  return (dispatch, state) => {
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", "Bearer " + state().accessToken);
+    myHeaders.append("Accept", "application/json");
+    myHeaders.append("Content-Type", "application/json");
+
+    var raw = JSON.stringify({
+      valueInputOption: "USER_ENTERED",
+      data: [
+        {
+          majorDimension: "ROWS",
+          range: "Appointment!" + appointmentRow + ":" + appointmentRow,
+          values: [updateParams.appointmentData],
+        },
+        {
+          majorDimension: "ROWS",
+          range: "Prescribes!" + prescribesRow + ":" + prescribesRow,
+          values: [updateParams.prescribesData],
+        },
+        {
+          majorDimension: "ROWS",
+          range: "Patient!" + patientRow + ":" + patientRow,
+          values: [updateParams.patientData],
+        },
+        {
+          majorDimension: "ROWS",
+          range: "Physician!" + physicianRow + ":" + physicianRow,
+          values: [updateParams.physicianData],
+        },
+      ],
+    });
+
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+
+    fetch(
+      "https://sheets.googleapis.com/v4/spreadsheets/" +
+        state().spreadSheetId +
+        "/values:batchUpdate?key=" +
+        process.env.REACT_APP_API_KEY,
+      requestOptions
+    )
+      .then((response) => response.text())
+      .then((result) => console.log(result))
+      .catch((error) => console.log("error", error));
+  };
+}
+
 export {
   setCurrAccessToken,
   fetchSpreadSheets,
   setCurrSpreadsheetId,
   fetchSpreadSheetData,
   appendSpreadSheetData,
+  updateSpreadSheetData,
 };

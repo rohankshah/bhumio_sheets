@@ -3,7 +3,10 @@ import { useDispatch } from "react-redux";
 import { Grid, Typography } from "@mui/material";
 import DriveInit from "../DriveInit";
 
-import { changeSelectedTab } from "../actions/app-actions";
+import {
+  changeSelectedTab,
+  changeSearchAndEditState,
+} from "../actions/app-actions";
 
 function Sidebar() {
   const dispatch = useDispatch();
@@ -24,7 +27,10 @@ function Sidebar() {
           variant="body1"
           fontSize={20}
           sx={{ cursor: "pointer" }}
-          onClick={() => dispatch(changeSelectedTab("edit"))}
+          onClick={() => {
+            dispatch(changeSearchAndEditState("edit"));
+            dispatch(changeSelectedTab("searchAndEdit"));
+          }}
         >
           Edit Patient
         </Typography>
@@ -34,7 +40,10 @@ function Sidebar() {
           variant="body1"
           fontSize={20}
           sx={{ cursor: "pointer" }}
-          onClick={() => dispatch(changeSelectedTab("search"))}
+          onClick={() => {
+            dispatch(changeSearchAndEditState("search"));
+            dispatch(changeSelectedTab("searchAndEdit"));
+          }}
         >
           Search
         </Typography>

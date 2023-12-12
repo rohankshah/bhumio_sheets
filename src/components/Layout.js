@@ -19,7 +19,7 @@ function Layout() {
   function currentTab() {
     if (selectedTab && selectedTab === "add") {
       return <MainForm />;
-    } else if (selectedTab && selectedTab === "search") {
+    } else if (selectedTab && selectedTab === "searchAndEdit") {
       return <SearchPatient />;
     } else {
       return <MainForm />;
