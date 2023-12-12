@@ -19,8 +19,6 @@ function SearchPatient() {
     address: "",
     prescription: "",
     dose: "",
-    visitDate: null,
-    nextVisit: null,
     physicianId: "",
     physicianName: "",
     physicianPhone: "",
@@ -31,10 +29,6 @@ function SearchPatient() {
   const [nextVisit, setNextVisit] = useState();
 
   const [searchQuery, setSearchQuery] = useState("");
-
-  useEffect(() => {
-    console.log(formValues);
-  }, [formValues, visitDate, nextVisit]);
 
   function performSearch() {
     if (spreadSheetData.length > 0) {
@@ -78,18 +72,12 @@ function SearchPatient() {
     if (appointmentSearch && appointmentSearch[2]) {
       let physicianSearchData = spreadSheetData[3].values.slice(1);
       physicianSearch = physicianSearchData.filter(
-        (ele) => ele[1] === appointmentSearch[2]
+        (ele) => ele[0] === appointmentSearch[2]
       )[0];
     }
-    console.log(
-      patientSearch,
-      appointmentSearch,
-      prescribesSearch,
-      physicianSearch
-    );
     setFormValues({
       patientId: patientSearch && patientSearch[0],
-      patientName: patientSearch && patientSearch[1] + patientSearch[2],
+      patientName: patientSearch && patientSearch[1] + " " + patientSearch[2],
       location: patientSearch && patientSearch[4],
       // age: patientSearch && patientSearch[0],
       // gender: patientSearch && patientSearch[0],
@@ -102,8 +90,14 @@ function SearchPatient() {
       physicianPhone: physicianSearch && physicianSearch[3],
       bill: "",
     });
-    setVisitDate(appointmentSearch && dayjs(appointmentSearch[3]));
-    setNextVisit(appointmentSearch && dayjs(appointmentSearch[4]));
+    const [monthVisit, dayVisit, yearVisit] = appointmentSearch[3].split("/");
+    const dateVisitFormat = dayjs(`${dayVisit}-${monthVisit}-${yearVisit}`);
+
+    const [monthNext, dayNext, yearNext] = appointmentSearch[3].split("/");
+    const dateNextFormat = dayjs(`${dayNext}-${monthNext}-${yearNext}`);
+
+    setVisitDate(appointmentSearch && dayjs(dateVisitFormat));
+    setNextVisit(appointmentSearch && dayjs(dateNextFormat));
   }
 
   return (

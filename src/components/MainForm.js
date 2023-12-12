@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { Grid, TextField, InputLabel, Select, MenuItem } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
+import dayjs from "dayjs";
+import { appendSpreadSheetData } from "../actions/drive-actions";
 
 function MainForm() {
+  const dispatch = useDispatch();
   const [formValues, setFormValues] = useState({
     patientId: "",
     patientName: "",
@@ -13,8 +17,6 @@ function MainForm() {
     address: "",
     prescription: "",
     dose: "",
-    visitDate: null,
-    nextVisit: null,
     physicianId: "",
     physicianName: "",
     physicianPhone: "",
@@ -25,8 +27,100 @@ function MainForm() {
   const [nextVisit, setNextVisit] = useState();
 
   useEffect(() => {
-    console.log(formValues);
+    setFormValues({ ...formValues, patientId: generateRandomId() });
+  }, []);
+
+  useEffect(() => {
+    async function dispatchAndReset() {
+      handleAdd();
+      setFormValues({
+        patientId: await generateRandomId(),
+        patientName: "",
+        location: "",
+        age: "",
+        gender: "",
+        phone: "",
+        address: "",
+        prescription: "",
+        dose: "",
+        physicianId: "",
+        physicianName: "",
+        physicianPhone: "",
+        bill: "",
+      });
+    }
+
+    if (checkFormComplete()) {
+      dispatchAndReset();
+    }
   }, [formValues, visitDate, nextVisit]);
+
+  function handleAdd() {
+    const appendParams = {
+      appointmentData: [
+        generateRandomId(),
+        formValues.patientId,
+        formValues.physicianId,
+        visitDate.format("DD/MM/YY"),
+        nextVisit.format("DD/MM/YY"),
+      ],
+      prescribesData: [
+        formValues.physicianId,
+        formValues.patientId,
+        formValues.prescription,
+        formValues.dose,
+      ],
+      patientData: [
+        formValues.patientId,
+        formValues.patientName.split(" ")[0],
+        formValues.patientName.split(" ")[1],
+        formValues.address,
+        formValues.location,
+        "",
+        formValues.phone,
+      ],
+      physicianData: [
+        formValues.physicianId,
+        formValues.physicianName,
+        "Sr Doctor",
+        formValues.physicianPhone,
+        formValues.bill,
+      ],
+    };
+    dispatch(appendSpreadSheetData(appendParams));
+  }
+
+  function generateRandomId() {
+    const characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let randomId = "";
+
+    for (let i = 0; i < 6; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      randomId += characters.charAt(randomIndex);
+    }
+
+    return randomId;
+  }
+
+  function checkFormComplete() {
+    return (
+      formValues.patientName &&
+      formValues.location &&
+      formValues.age &&
+      formValues.gender &&
+      formValues.phone &&
+      formValues.address &&
+      formValues.prescription &&
+      formValues.dose &&
+      formValues.physicianId &&
+      formValues.physicianName &&
+      formValues.physicianPhone &&
+      formValues.bill &&
+      visitDate &&
+      nextVisit
+    );
+  }
 
   return (
     <>
@@ -39,9 +133,6 @@ function MainForm() {
               variant="outlined"
               sx={{ width: "100%" }}
               value={formValues.patientId}
-              onChange={(e) =>
-                setFormValues({ ...formValues, patientId: e.target.value })
-              }
             />
           </Grid>
           <Grid item lg={4}>
@@ -71,21 +162,14 @@ function MainForm() {
         <Grid container justifyContent="space-between" marginBottom="40px">
           <Grid item lg={1}>
             <InputLabel>Age</InputLabel>
-            <Select
-              label="Age"
+            <TextField
+              variant="outlined"
               sx={{ width: "100%" }}
               value={formValues.age}
               onChange={(e) =>
                 setFormValues({ ...formValues, age: e.target.value })
               }
-            >
-              <MenuItem value={10}>Ten</MenuItem>
-              <MenuItem value={20}>Twenty</MenuItem>
-              <MenuItem value={30}>Thirty</MenuItem>
-              <MenuItem value={40}>Forty</MenuItem>
-              <MenuItem value={50}>Fifty</MenuItem>
-              <MenuItem value={60}>Sixty</MenuItem>
-            </Select>
+            />
           </Grid>
           <Grid item lg={1}>
             <InputLabel>Gender</InputLabel>
@@ -162,11 +246,17 @@ function MainForm() {
         <Grid container justifyContent="start" marginBottom="40px" spacing={4}>
           <Grid item lg={3}>
             <InputLabel>Visit Date</InputLabel>
-            <DatePicker value={formValues.visitDate} onChange={setVisitDate} />
+            <DatePicker
+              value={visitDate}
+              onChange={(newValue) => setVisitDate(newValue)}
+            />
           </Grid>
           <Grid item lg={3}>
             <InputLabel>Next Visit</InputLabel>
-            <DatePicker value={formValues.nextVisit} onChange={setNextVisit} />
+            <DatePicker
+              value={nextVisit}
+              onChange={(newValue) => setNextVisit(newValue)}
+            />
           </Grid>
         </Grid>
         {/* Line break */}
@@ -236,6 +326,7 @@ function MainForm() {
             backgroundColor: "black",
           }}
         ></div>
+        <button onClick={() => handleAdd()}>Add</button>
       </Grid>
     </>
   );

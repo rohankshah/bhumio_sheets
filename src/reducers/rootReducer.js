@@ -29,6 +29,7 @@ function rootReducer(state = initialState, action) {
       spreadSheets: action.payload,
     };
   } else if (action.type === "SET-SPREADSHEET-ID") {
+    console.log(action.payload);
     return {
       ...state,
       spreadSheetId: action.payload,
