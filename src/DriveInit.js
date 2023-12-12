@@ -19,7 +19,7 @@ const DriveInit = () => {
 
   function handleLogin() {
     let client_id = process.env.REACT_APP_CLIENT_ID;
-    let redirect_uri = "http://localhost:3000/";
+    let redirect_uri = window.location.href;
 
     const url =
       `https://accounts.google.com/o/oauth2/v2/auth?` +
