@@ -36,6 +36,7 @@ function rootReducer(state = initialState, action) {
       spreadSheetId: action.payload,
     };
   } else if (action.type === "SET-SPREADSHEET-DATA") {
+    console.log(action.payload);
     return {
       ...state,
       spreadSheetData: action.payload,
@@ -49,6 +50,11 @@ function rootReducer(state = initialState, action) {
     return {
       ...state,
       searchAndEditState: action.payload,
+    };
+  } else if (action.type === "ADD-NEW-SPREAD-SHEET-DATA") {
+    return {
+      ...state,
+      spreadSheetData: action.payload,
     };
   } else {
     return {

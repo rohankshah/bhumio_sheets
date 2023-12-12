@@ -29,31 +29,6 @@ function MainForm() {
     setFormValues({ ...formValues, patientId: generateRandomId() });
   }, []);
 
-  useEffect(() => {
-    async function dispatchAndReset() {
-      handleAdd();
-      setFormValues({
-        patientId: await generateRandomId(),
-        patientName: "",
-        location: "",
-        age: "",
-        gender: "",
-        phone: "",
-        address: "",
-        prescription: "",
-        dose: "",
-        physicianId: "",
-        physicianName: "",
-        physicianPhone: "",
-        bill: "",
-      });
-    }
-
-    if (checkFormComplete()) {
-      dispatchAndReset();
-    }
-  }, [formValues, visitDate, nextVisit]);
-
   function handleAdd() {
     const appendParams = {
       appointmentData: [
@@ -89,6 +64,27 @@ function MainForm() {
     dispatch(appendSpreadSheetData(appendParams));
   }
 
+  async function dispatchAndReset() {
+    handleAdd();
+    setFormValues({
+      patientId: await generateRandomId(),
+      patientName: "",
+      location: "",
+      age: "",
+      gender: "",
+      phone: "",
+      address: "",
+      prescription: "",
+      dose: "",
+      physicianId: "",
+      physicianName: "",
+      physicianPhone: "",
+      bill: "",
+    });
+    setNextVisit(null);
+    setVisitDate(null);
+  }
+
   function generateRandomId() {
     const characters =
       "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -102,24 +98,24 @@ function MainForm() {
     return randomId;
   }
 
-  function checkFormComplete() {
-    return (
-      formValues.patientName &&
-      formValues.location &&
-      formValues.age &&
-      formValues.gender &&
-      formValues.phone &&
-      formValues.address &&
-      formValues.prescription &&
-      formValues.dose &&
-      formValues.physicianId &&
-      formValues.physicianName &&
-      formValues.physicianPhone &&
-      formValues.bill &&
-      visitDate &&
-      nextVisit
-    );
-  }
+  // function checkFormComplete() {
+  //   return (
+  //     formValues.patientName &&
+  //     formValues.location &&
+  //     formValues.age &&
+  //     formValues.gender &&
+  //     formValues.phone &&
+  //     formValues.address &&
+  //     formValues.prescription &&
+  //     formValues.dose &&
+  //     formValues.physicianId &&
+  //     formValues.physicianName &&
+  //     formValues.physicianPhone &&
+  //     formValues.bill &&
+  //     visitDate &&
+  //     nextVisit
+  //   );
+  // }
 
   return (
     <>
@@ -318,14 +314,26 @@ function MainForm() {
           </Grid>
         </Grid>
         {/* Line break */}
-        <div
+        {/* <div
           style={{
             height: "2px",
             width: "100%",
             backgroundColor: "black",
           }}
-        ></div>
-        <button onClick={() => handleAdd()}>Add</button>
+        ></div> */}
+        <Grid container flexDirection={"row"} justifyContent={"center"}>
+          <Grid
+            item
+            sx={{
+              padding: "10px 40px",
+              border: "1px solid black",
+              maxWidth: "fit-content",
+            }}
+            onClick={() => dispatchAndReset()}
+          >
+            Add
+          </Grid>
+        </Grid>
       </Grid>
     </>
   );

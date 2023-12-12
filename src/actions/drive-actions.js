@@ -26,6 +26,13 @@ function setSpreadsheetData(data) {
   };
 }
 
+function addNewSpreadsheetData(updatedObj) {
+  return {
+    type: "ADD-NEW-SPREAD-SHEET-DATA",
+    payload: updatedObj,
+  };
+}
+
 function setCurrAccessToken(token) {
   return (dispatch, state) => {
     dispatch(setAccessToken(token));
@@ -93,6 +100,19 @@ function fetchSpreadSheetData(spreadSheetId) {
 function appendSpreadSheetData(appendParams) {
   console.log(appendParams);
   return (dispatch, state) => {
+    let updatedObj = state().spreadSheetData;
+    if (appendParams && appendParams.appointmentData) {
+      updatedObj[0].values.push(appendParams.appointmentData);
+    }
+    if (appendParams && appendParams.prescribesData) {
+      updatedObj[1].values.push(appendParams.prescribesData);
+    }
+    if (appendParams && appendParams.patientData) {
+      updatedObj[2].values.push(appendParams.patientData);
+    }
+    if (appendParams && appendParams.physicianData) {
+      updatedObj[3].values.push(appendParams.physicianData);
+    }
     var myHeadersAppointment = new Headers();
     myHeadersAppointment.append(
       "Authorization",
@@ -213,6 +233,7 @@ function appendSpreadSheetData(appendParams) {
     )
       .then((response) => response.text())
       .then((result) => console.log(result))
+      .then(() => dispatch(addNewSpreadsheetData(updatedObj)))
       .catch((error) => console.log("error", error));
   };
 }
@@ -224,20 +245,11 @@ function updateSpreadSheetData(
   physicianRow,
   patientRow
 ) {
-  console.log(
-    updateParams,
-    appointmentRow,
-    prescribesRow,
-    physicianRow,
-    patientRow
-  );
-  console.log(updateParams);
   return (dispatch, state) => {
     var myHeaders = new Headers();
     myHeaders.append("Authorization", "Bearer " + state().accessToken);
     myHeaders.append("Accept", "application/json");
     myHeaders.append("Content-Type", "application/json");
-
     var raw = JSON.stringify({
       valueInputOption: "USER_ENTERED",
       data: [
@@ -263,14 +275,12 @@ function updateSpreadSheetData(
         },
       ],
     });
-
     var requestOptions = {
       method: "POST",
       headers: myHeaders,
       body: raw,
       redirect: "follow",
     };
-
     fetch(
       "https://sheets.googleapis.com/v4/spreadsheets/" +
         state().spreadSheetId +

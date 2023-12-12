@@ -49,7 +49,6 @@ function SearchPatient() {
   }
 
   async function handleSearch() {
-    console.log("searchs");
     setPatientRow(0);
     setAppointmentRow(0);
     setPrescribesRow(0);
