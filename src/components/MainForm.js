@@ -108,6 +108,7 @@ function MainForm() {
           <Grid item lg={3}>
             <InputLabel>Patient Id</InputLabel>
             <TextField
+              data-testid="patientId"
               variant="outlined"
               sx={{ width: "100%" }}
               value={formValues.patientId}
@@ -116,6 +117,7 @@ function MainForm() {
           <Grid item lg={4}>
             <InputLabel>Patient Name (First, Last Name)</InputLabel>
             <TextField
+              data-testid="patientName"
               variant="outlined"
               sx={{ width: "100%" }}
               value={formValues.patientName}
@@ -127,6 +129,7 @@ function MainForm() {
           <Grid item lg={4}>
             <InputLabel>Location</InputLabel>
             <TextField
+              data-testid="location"
               variant="outlined"
               sx={{ width: "100%" }}
               value={formValues.location}
@@ -141,6 +144,7 @@ function MainForm() {
           <Grid item lg={2}>
             <InputLabel>Age</InputLabel>
             <TextField
+              data-testid="age"
               variant="outlined"
               sx={{ width: "100%" }}
               value={formValues.age}
@@ -152,6 +156,7 @@ function MainForm() {
           <Grid item lg={2}>
             <InputLabel>Gender</InputLabel>
             <Select
+              data-testid="gender"
               label="Gender"
               sx={{ width: "100%" }}
               value={formValues.gender}
@@ -159,13 +164,18 @@ function MainForm() {
                 setFormValues({ ...formValues, gender: e.target.value })
               }
             >
-              <MenuItem value="Male">Male</MenuItem>
-              <MenuItem value="Female">Female</MenuItem>
+              <MenuItem data-testid="genderMale" value="Male">
+                Male
+              </MenuItem>
+              <MenuItem data-testid="genderFemale" value="Female">
+                Female
+              </MenuItem>
             </Select>
           </Grid>
           <Grid item lg={3}>
             <InputLabel>Phone</InputLabel>
             <TextField
+              data-testid="phone"
               variant="outlined"
               sx={{ width: "100%" }}
               value={formValues.phone}
@@ -177,6 +187,7 @@ function MainForm() {
           <Grid item lg={3}>
             <InputLabel>Address</InputLabel>
             <TextField
+              data-testid="address"
               variant="outlined"
               sx={{ width: "100%" }}
               value={formValues.address}
@@ -200,6 +211,7 @@ function MainForm() {
           <Grid item lg={5}>
             <InputLabel>Prescription</InputLabel>
             <TextField
+              data-testid="prescription"
               variant="outlined"
               sx={{ width: "100%" }}
               value={formValues.prescription}
@@ -211,6 +223,7 @@ function MainForm() {
           <Grid item lg={5}>
             <InputLabel>Dose</InputLabel>
             <TextField
+              data-testid="dose"
               variant="outlined"
               sx={{ width: "100%" }}
               value={formValues.dose}
@@ -225,6 +238,7 @@ function MainForm() {
           <Grid item lg={3}>
             <InputLabel>Visit Date</InputLabel>
             <DatePicker
+              data-testid="visitDate"
               value={visitDate}
               onChange={(newValue) => setVisitDate(newValue)}
             />
@@ -232,6 +246,7 @@ function MainForm() {
           <Grid item lg={3}>
             <InputLabel>Next Visit</InputLabel>
             <DatePicker
+              data-testid="nextDate"
               value={nextVisit}
               onChange={(newValue) => setNextVisit(newValue)}
             />
@@ -251,6 +266,7 @@ function MainForm() {
           <Grid item lg={3}>
             <InputLabel>Physician ID</InputLabel>
             <TextField
+              data-testid="physicianId"
               variant="outlined"
               sx={{ width: "100%" }}
               value={formValues.physicianId}
@@ -262,6 +278,7 @@ function MainForm() {
           <Grid item lg={5}>
             <InputLabel>Physician Name (First, Last Name)</InputLabel>
             <TextField
+              data-testid="physicianName"
               variant="outlined"
               sx={{ width: "100%" }}
               value={formValues.physicianName}
@@ -276,6 +293,7 @@ function MainForm() {
           <Grid item lg={3}>
             <InputLabel>Phone</InputLabel>
             <TextField
+              data-testid="physicianPhone"
               variant="outlined"
               sx={{ width: "100%" }}
               value={formValues.physicianPhone}
@@ -287,6 +305,7 @@ function MainForm() {
           <Grid item lg={3}>
             <InputLabel>Bill</InputLabel>
             <TextField
+              data-testid="bill"
               variant="outlined"
               sx={{ width: "100%" }}
               value={formValues.bill}
@@ -296,18 +315,10 @@ function MainForm() {
             />
           </Grid>
         </Grid>
-        {/* Line break */}
-        {/* <div
-          style={{
-            height: "2px",
-            width: "100%",
-            backgroundColor: "black",
-          }}
-        ></div> */}
         <Grid container flexDirection={"row"} justifyContent={"center"}>
-          <Grid
-            item
-            sx={{
+          <div
+            data-testid="addButton"
+            style={{
               padding: "10px 40px",
               border: "1px solid black",
               maxWidth: "fit-content",
@@ -315,7 +326,7 @@ function MainForm() {
             onClick={() => dispatchAndReset()}
           >
             Add
-          </Grid>
+          </div>
         </Grid>
       </Grid>
     </>
