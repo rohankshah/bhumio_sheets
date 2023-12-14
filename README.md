@@ -2,6 +2,13 @@
 
 https://github.com/rohankshah/bhumio_sheets/assets/22636983/e4448530-e581-4e48-a384-b3b29f12f5a6
 
+:white_check_mark: Google OAuth and select file without 3rd party library
+:white_check_mark: Integrated sheets api without 3rd party library
+:white_check_mark: And new patient and save to sheets
+:white_check_mark: Search and edit patient
+:x: Automatic saving
+:x: Test coverage unit tests
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
